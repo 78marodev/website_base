@@ -33,7 +33,7 @@
     </div>
 
     <script>
-        // 🔒 SECURE: No Render domain strings are exposed to browser users or inspectors!
+        // Define your backend endpoint relative path or absolute URL here
         const BACKEND_API_URL = "/api/verify";
 
         async function verifyActiveSession() {
@@ -50,7 +50,6 @@
             if (!enteredKey) return;
 
             try {
-                // Fetch directly from your own domain path rule
                 const response = await fetch(BACKEND_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -77,6 +76,7 @@
             document.getElementById("protected-content").style.display = "block";
         }
 
+        // Initialize active session validation check on load
         verifyActiveSession();
     </script>
 </body>
