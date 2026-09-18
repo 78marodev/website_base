@@ -44,8 +44,8 @@
 
     <!-- 3. SECURE FRONTEND HANDSHAKE ENGINE -->
     <script>
-        // REPLACE THIS URL with your live self-hosted Render backend domain link
-        const BACKEND_API_URL = "https://onrender.com";
+        // ⚠️ REPLACE THIS URL WITH YOUR UNIQUE LIVE WEB SERVICE LINK FROM RENDER:
+        const BACKEND_API_URL = "https://your-unique-app-name.onrender.com";
 
         async function verifyActiveSession() {
             // Read validation token cookie from browser history cache parameters
@@ -80,7 +80,7 @@
                     document.getElementById("keyField").value = "";
                 }
             } catch (err) {
-                errorElement.innerText = "Backend API server connection error.";
+                errorElement.innerText = "Backend API server connection error. Make sure the server is awake.";
                 errorElement.style.display = "block";
             }
         }
