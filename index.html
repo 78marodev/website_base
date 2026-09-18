@@ -59,12 +59,15 @@
         }
 
         async function verifyActiveSession() {
-            // Scan volatile browser history memory for an existing successful login token
-            const sessionStatus = sessionStorage.getItem("local_vault_unlocked");
-            if (sessionStatus === "true") {
+            // Read validation key from volatile temporary browser history memory
+            const secureToken = sessionStorage.getItem("access_granted_token");
+            
+            // Crucial: Must exactly match your "hello martin " backend string!
+            if (secureToken === "hello martin ") { 
                 renderSecureSite();
             }
         }
+
 
         async function authenticateVisitorLocal() {
             const enteredInput = document.getElementById("keyField").value.trim();
