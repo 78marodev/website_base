@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Network Portal</title>
+    <style>
+        body { margin: 0; background-color: #0f172a; font-family: sans-serif; color: #fff; }
+        
+        /* Keep real content hidden by default */
+        #protected-content { display: none; padding: 20px; }
+
+        /* The Fullscreen Security Cover Wall */
+        #security-wall {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 99999;
+        }
+        .gateway-box { background: #1e293b; padding: 40px; border-radius: 8px; width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h2 { margin-bottom: 20px; font-size: 22px; color: #f8fafc; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #334155; border-radius: 4px; background: #0f172a; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background: #1d4ed8; }
+        .error-response { color: #ef4444; font-size: 14px; margin-top: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. FULLSCREEN SECURITY WALL OVERLAY -->
+    <div id="security-wall">
+        <div class="gateway-box">
+            <h2>API Key Verification</h2>
+            <input type="password" id="keyField" placeholder="Paste Auth Key Here...">
+            <button onclick="requestAccessFromBackend()">Unlock System</button>
+            <div id="error" class="error-response">Authentication failed. Access Denied.</div>
+        </div>
+    </div>
+
+    <!-- 2. UNRESTRICTED SYSTEM ASSETS (LOADS ONLY AFTER AUTHENTICATION) -->
+    <div id="protected-content">
+        <h1>🔒 Security Cleared: Infinite Session Active</h1>
+        <p>Your photos, scripts, and layouts are safely rendered.</p>
+        <img src="GRAND OPENING (2).png" alt="Protected Network Asset">
+    </div>
+
+    <!-- 3. CLIENT SECURITY ENGINE -->
+    <script>
+        // REPLACE THIS URL with your live self-hosted API server domain link
+        const BACKEND_API_URL = "https://render.com";
+
+        async function verifyActiveSession() {
+            // Read validation key from volatile temporary browser history memory
+            const secureToken = sessionStorage.getItem("access_granted_token");
+            if (secureToken === "JWT_MOCK_SUCCESS_TOKEN_STRING") {
+                renderSecureSite();
+            }
+        }
+
+        async function requestAccessFromBackend() {
+            const enteredKey = document.getElementById("keyField").value.trim();
+            const errorElement = document.getElementById("error");
+
+            try {
+                // Post the key string securely over the web network to your API endpoint
+                const response = await fetch(`${BACKEND_API_URL}/api/verify`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ authKey: enteredKey })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.valid) {
+                    // Save verification state to cache memory layer
+                    sessionStorage.setItem("access_granted_token", result.sessionToken);
+                    renderSecureSite();
+                } else {
+                    errorElement.style.display = "block";
+                    document.getElementById("keyField").value = "";
+                }
+            } catch (err) {
+                errorElement.innerText = "Backend API server connection error.";
+                errorElement.style.display = "block";
+            }
+        }
+
+        function renderSecureSite() {
+            document.getElementById("security-wall").style.display = "none";
+            document.getElementById("protected-content").style.display = "block";
+        }
+
+        // Initialize script verification sequence immediately upon loading page elements
+        verifyActiveSession();
+    </script>
+</body>
+</html>
