@@ -6,16 +6,9 @@
     <title>Autonomous Secure Network</title>
     <style>
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0f172a; font-family: sans-serif; color: #fff; overflow: hidden; }
-        
-        /* Keep real content hidden by default */
         #protected-content { display: none; width: 100%; height: 100%; box-sizing: border-box; }
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
-
-        /* The Fullscreen Pure JS Security Cover Wall */
-        #security-wall {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 99999;
-        }
+        #security-wall { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 99999; }
         .gateway-box { background: #1e293b; padding: 40px; border-radius: 8px; width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         h2 { margin-bottom: 20px; font-size: 22px; color: #f8fafc; }
         input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #334155; border-radius: 4px; background: #0f172a; color: #fff; box-sizing: border-box; }
@@ -26,7 +19,6 @@
 </head>
 <body>
 
-    <!-- 1. FULLSCREEN OVERLAY: BLOCKS ENTIRE VIEWPORT UNTIL HANDSHAKE CLEARS -->
     <div id="security-wall">
         <div class="gateway-box">
             <h2>Authentication Vault</h2>
@@ -36,19 +28,15 @@
         </div>
     </div>
 
-    <!-- 2. UNRESTRICTED SYSTEM ASSETS (DYNAMICALLY RENDERED POST-VERIFICATION) -->
     <div id="protected-content">
-        <!-- Renders your private internal index file cleanly inside an absolute wrapper -->
         <iframe src="_index.html"></iframe>
     </div>
 
-    <!-- 3. SECURE FRONTEND HANDSHAKE ENGINE -->
     <script>
-        // ⚠️ REPLACE THIS URL WITH YOUR UNIQUE LIVE WEB SERVICE LINK FROM RENDER:
-        const BACKEND_API_URL = "https://your-unique-app-name.onrender.com";
+        // 🔒 SECURE: No Render domain strings are exposed to browser users or inspectors!
+        const BACKEND_API_URL = "/api/verify";
 
         async function verifyActiveSession() {
-            // Read validation token cookie from browser history cache parameters
             const cookieHeader = document.cookie || "";
             if (cookieHeader.includes("gatekeeper_token=hello%20martin%20") || cookieHeader.includes("gatekeeper_token=hello martin ")) {
                 renderSecureSite();
@@ -62,8 +50,8 @@
             if (!enteredKey) return;
 
             try {
-                // Post verification values straight to your private Node.js server endpoint
-                const response = await fetch(`${BACKEND_API_URL}/api/verify`, {
+                // Fetch directly from your own domain path rule
+                const response = await fetch(BACKEND_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ authKey: enteredKey })
@@ -72,7 +60,6 @@
                 const result = await response.json();
 
                 if (response.ok && result.valid) {
-                    // Save token cookie globally onto your custom domain root path for Cloudflare tracking
                     document.cookie = `gatekeeper_token=${encodeURIComponent(result.sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
                     renderSecureSite();
                 } else {
@@ -80,7 +67,7 @@
                     document.getElementById("keyField").value = "";
                 }
             } catch (err) {
-                errorElement.innerText = "Backend API server connection error. Make sure the server is awake.";
+                errorElement.innerText = "Secure Gateway authentication link error.";
                 errorElement.style.display = "block";
             }
         }
@@ -90,7 +77,6 @@
             document.getElementById("protected-content").style.display = "block";
         }
 
-        // Initialize script logic instantly upon asset generation
         verifyActiveSession();
     </script>
 </body>
