@@ -52,6 +52,40 @@
         </div>
 
         </div>
+        <script>
+        (function() {
+            // 1. CHOOSE YOUR PASSCODE SECRET: Set your custom password token value here
+            const SECRET_TOKEN = "SecretGatekeeper78!";
+    
+            // 2. CHECK THE ACCESSED LINK: Look for '?token=...' in the URL address bar
+            const urlParams = new URLSearchParams(window.location.search);
+            const providedToken = urlParams.get('token');
+    
+            // Check if the browser already has a saved login stamp from a previous session
+            const sessionUnlocked = localStorage.getItem('site_unlocked') === 'true';
+    
+            if (providedToken === SECRET_TOKEN) {
+                // Secret token found in URL! Save a stamp in memory so internal links load smoothly
+                localStorage.setItem('site_unlocked', 'true');
+            } else if (!sessionUnlocked) {
+                // STEALTH TRIGGER: No valid token header found. Hijack the page and show a dead 404
+                document.documentElement.innerHTML = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head><title>404 Not Found</title></head>
+                    <body style="font-family:sans-serif; padding:30px; color:#333; background:#fff;">
+                        <h1>404 Not Found</h1>
+                        <p>The requested URL was not found on this server.</p>
+                    </body>
+                    </html>
+                `;
+                // Stop executing any remaining scripts on the page entirely
+                window.stop();
+                throw new Error("Unauthorized access blocked.");
+            }
+        })();
+    </script>
+
 
     <!-- Footer -->
     <footer>
