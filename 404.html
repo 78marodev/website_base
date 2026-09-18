@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - The Black Meadow</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            padding: 2rem;
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            background-color: #111827;
+        }
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        .links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Black Meadow</h1>
+        <p>Your self-hosted server is live behind BunkerWeb and Cloudflare WAF protection!</p>
+        <div class="links">
+            <a href="/">Home</a>
+            <a href="/missing-page-test">Test 404 Error</a>
+        </div>
+    </div>
+</body>
+</html>
