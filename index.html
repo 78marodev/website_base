@@ -6,8 +6,6 @@
     <title>Autonomous Secure Network</title>
     <style>
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0f172a; font-family: sans-serif; color: #fff; overflow: hidden; }
-        #protected-content { display: none; width: 100%; height: 100%; box-sizing: border-box; }
-        iframe { width: 100%; height: 100%; border: none; background: #fff; }
         #security-wall { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 99999; }
         .gateway-box { background: #1e293b; padding: 40px; border-radius: 8px; width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         h2 { margin-bottom: 20px; font-size: 22px; color: #f8fafc; }
@@ -28,22 +26,12 @@
         </div>
     </div>
 
-    <div id="protected-content">
-        <iframe src="_index.html"></iframe>
-    </div>
-
     <script>
-        // Simulated local backend database mapping to your server.js values
-        const VALID_API_KEYS = new Set([
-            "@bAhroozaa2007",
-            "bAhroozaa20245671",
-            "bAhroozaa"
-        ]);
-
         async function verifyActiveSession() {
             const cookieHeader = document.cookie || "";
+            // If cookie is already saved, reload the page so the worker reads it and grants access
             if (cookieHeader.includes("gatekeeper_token=hello%20martin%20") || cookieHeader.includes("gatekeeper_token=hello martin ")) {
-                renderSecureSite();
+                window.location.reload();
             }
         }
 
@@ -53,30 +41,35 @@
 
             if (!enteredKey) return;
 
-            // This replaces the backend URL fetch call with simulated native logic
-            if (VALID_API_KEYS.has(enteredKey)) {
-                const sessionToken = "hello martin ";
-                document.cookie = `gatekeeper_token=${encodeURIComponent(sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
-                renderSecureSite();
-            } else {
+            try {
+                // Hits the Cloudflare Worker natively on your same domain
+                const response = await fetch("/api/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ authKey: enteredKey })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.valid) {
+                    document.cookie = `gatekeeper_token=${encodeURIComponent(result.sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
+                    // Refresh instantly to load your secure portfolio internally without moving URLs
+                    window.location.reload();
+                } else {
+                    errorElement.style.display = "block";
+                    document.getElementById("keyField").value = "";
+                }
+            } catch (err) {
+                errorElement.innerText = "Secure Gateway authentication link error.";
                 errorElement.style.display = "block";
-                document.getElementById("keyField").value = "";
             }
         }
 
-        function renderSecureSite() {
-            document.getElementById("security-wall").style.display = "none";
-            document.getElementById("protected-content").style.display = "block";
-        }
-
-        // Add support for pressing Enter inside the password vault field
         document.getElementById('keyField').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 requestAccessFromBackend();
             }
         });
-
-        verifyActiveSession();
     </script>
 </body>
 </html>
