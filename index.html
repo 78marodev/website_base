@@ -37,6 +37,7 @@
 
         async function requestAccessFromBackend() {
             const enteredKey = document.getElementById("keyField").value.trim();
+            document.cookie = `gatekeeper_token=${encodeURIComponent(result.sessionToken)}; path=/; domain=.theblackmeadow.qzz.io; secure; samesite=lax; max-age=86400`;
             const errorElement = document.getElementById("error");
 
             if (!enteredKey) return;
