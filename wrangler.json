@@ -2,6 +2,8 @@
   "name": "website-base",
   "compatibility_date": "2026-09-18",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": true
   }
 }
