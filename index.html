@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autonomous Secure Network</title>
     <style>
-        body { margin: 0; background-color: #0f172a; font-family: sans-serif; color: #fff; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0f172a; font-family: sans-serif; color: #fff; overflow: hidden; }
         
         /* Keep real content hidden by default */
-        #protected-content { display: none; padding: 20px; }
+        #protected-content { display: none; width: 100%; height: 100%; box-sizing: border-box; }
+        iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
         /* The Fullscreen Pure JS Security Cover Wall */
         #security-wall {
@@ -30,34 +31,67 @@
         <div class="gateway-box">
             <h2>Authentication Vault</h2>
             <input type="password" id="keyField" placeholder="Enter Account API Key or Pass...">
-            <button onclick="authenticateVisitorLocal()">Verify Signature</button>
+            <button onclick="requestAccessFromBackend()">Verify Signature</button>
             <div id="error" class="error-response">Access Denied. Signature mismatch.</div>
         </div>
     </div>
 
     <!-- 2. UNRESTRICTED SYSTEM ASSETS (DYNAMICALLY RENDERED POST-VERIFICATION) -->
     <div id="protected-content">
-        <h1>🔒 Security Cleared: Autonomous Lock Active</h1>
-        <p>Your photos, scripts, and layouts are safely rendered locally.</p>
-        <iframe src="_index.html" width="100%" height="100%">
+        <!-- Renders your private internal index file cleanly inside an absolute wrapper -->
+        <iframe src="_index.html"></iframe>
     </div>
 
-<script>
-    function saveToken() {
-        const token = document.getElementById('tokenInput').value.trim();
-        
-        // This must match what your self-hosted backend API responds with ("hello martin ")
-        if (token === "hello martin ") {
-            // Save token cookie globally onto your custom domain root path
-            document.cookie = "gatekeeper_token=hello martin ; path=/; secure; samesite=strict; max-age=86400";
-            
-            // Instantly hard-reload straight onto your clean main address bar
-            window.location.replace("/");
-        } else {
-            document.getElementById("errorMsg").style.display = "block";
-        }
-    }
-</script>
+    <!-- 3. SECURE FRONTEND HANDSHAKE ENGINE -->
+    <script>
+        // REPLACE THIS URL with your live self-hosted Render backend domain link
+        const BACKEND_API_URL = "https://onrender.com";
 
+        async function verifyActiveSession() {
+            // Read validation token cookie from browser history cache parameters
+            const cookieHeader = document.cookie || "";
+            if (cookieHeader.includes("gatekeeper_token=hello%20martin%20") || cookieHeader.includes("gatekeeper_token=hello martin ")) {
+                renderSecureSite();
+            }
+        }
+
+        async function requestAccessFromBackend() {
+            const enteredKey = document.getElementById("keyField").value.trim();
+            const errorElement = document.getElementById("error");
+
+            if (!enteredKey) return;
+
+            try {
+                // Post verification values straight to your private Node.js server endpoint
+                const response = await fetch(`${BACKEND_API_URL}/api/verify`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ authKey: enteredKey })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.valid) {
+                    // Save token cookie globally onto your custom domain root path for Cloudflare tracking
+                    document.cookie = `gatekeeper_token=${encodeURIComponent(result.sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
+                    renderSecureSite();
+                } else {
+                    errorElement.style.display = "block";
+                    document.getElementById("keyField").value = "";
+                }
+            } catch (err) {
+                errorElement.innerText = "Backend API server connection error.";
+                errorElement.style.display = "block";
+            }
+        }
+
+        function renderSecureSite() {
+            document.getElementById("security-wall").style.display = "none";
+            document.getElementById("protected-content").style.display = "block";
+        }
+
+        // Initialize script logic instantly upon asset generation
+        verifyActiveSession();
+    </script>
 </body>
 </html>
