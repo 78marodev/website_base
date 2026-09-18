@@ -3,26 +3,34 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // 1. PUBLIC LINK EXCEPTION: Let anyone view the login page
+    // 1. PUBLIC EXCEPTION: Allow the login form to load publicly
     if (path === "/login" || path === "/login.html") {
       return env.ASSETS.fetch(request);
     }
 
-    // 2. CHECK FOR VISITOR AUTHORIZATION
-    // It checks both normal incoming api headers and browser local cookie tokens
-    const userToken = request.headers.get("Authorization");
+    // 2. TOKEN DETECTION: Look for standard headers OR browser cookies
+    let userToken = request.headers.get("Authorization");
+    
+    // If no header is present, check if a cookie was sent from a previous login session
+    if (!userToken) {
+      const cookieHeader = request.headers.get("Cookie") || "";
+      const matches = cookieHeader.match(/gatekeeper_token=([^;]+)/);
+      if (matches) {
+        userToken = `Bearer ${matches[1]}`;
+      }
+    }
+
     const EXPECTED_TOKEN = `Bearer ${env.AUTH_TOKEN}`;
 
-    // 3. STEALTH LAYER TRIGGER
+    // 3. GLOBAL STEALTH TRIGGER: If token fails or is missing, return a dead 404
     if (!userToken || userToken !== EXPECTED_TOKEN) {
-      // If a regular user hits the site without a token header, show an invisible blank 404
       return new Response("Not Found", { 
         status: 404, 
         headers: { "Content-Type": "text/plain" } 
       });
     }
 
-    // 4. PATH ROUTING PASSTHROUGH: Access granted!
+    // 4. PASSTHROUGH GRANTED: Serve the file or image requested
     return env.ASSETS.fetch(request);
   }
 };
