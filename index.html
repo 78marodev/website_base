@@ -33,8 +33,12 @@
     </div>
 
     <script>
-        // Define your backend endpoint relative path or absolute URL here
-        const BACKEND_API_URL = "/api/verify";
+        // Simulated local backend database mapping to your server.js values
+        const VALID_API_KEYS = new Set([
+            "@bAhroozaa2007",
+            "bAhroozaa20245671",
+            "bAhroozaa"
+        ]);
 
         async function verifyActiveSession() {
             const cookieHeader = document.cookie || "";
@@ -49,25 +53,14 @@
 
             if (!enteredKey) return;
 
-            try {
-                const response = await fetch(BACKEND_API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ authKey: enteredKey })
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.valid) {
-                    document.cookie = `gatekeeper_token=${encodeURIComponent(result.sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
-                    renderSecureSite();
-                } else {
-                    errorElement.style.display = "block";
-                    document.getElementById("keyField").value = "";
-                }
-            } catch (err) {
-                errorElement.innerText = "Secure Gateway authentication link error.";
+            // This replaces the backend URL fetch call with simulated native logic
+            if (VALID_API_KEYS.has(enteredKey)) {
+                const sessionToken = "hello martin ";
+                document.cookie = `gatekeeper_token=${encodeURIComponent(sessionToken)}; path=/; secure; samesite=strict; max-age=86400`;
+                renderSecureSite();
+            } else {
                 errorElement.style.display = "block";
+                document.getElementById("keyField").value = "";
             }
         }
 
@@ -76,7 +69,13 @@
             document.getElementById("protected-content").style.display = "block";
         }
 
-        // Initialize active session validation check on load
+        // Add support for pressing Enter inside the password vault field
+        document.getElementById('keyField').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                requestAccessFromBackend();
+            }
+        });
+
         verifyActiveSession();
     </script>
 </body>
