@@ -1,20 +1,28 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const path = url.pathname;
 
-    // 1. Get the authorization token sent by the visitor
+    // 1. PUBLIC LINK EXCEPTION: Let anyone view the login page
+    if (path === "/login" || path === "/login.html") {
+      return env.ASSETS.fetch(request);
+    }
+
+    // 2. CHECK FOR VISITOR AUTHORIZATION
+    // It checks both normal incoming api headers and browser local cookie tokens
     const userToken = request.headers.get("Authorization");
     const EXPECTED_TOKEN = `Bearer ${env.AUTH_TOKEN}`;
 
-    // 2. GLOBAL SECURITY WALL: If the token is wrong or missing, hide everything!
+    // 3. STEALTH LAYER TRIGGER
     if (!userToken || userToken !== EXPECTED_TOKEN) {
+      // If a regular user hits the site without a token header, show an invisible blank 404
       return new Response("Not Found", { 
         status: 404, 
         headers: { "Content-Type": "text/plain" } 
       });
     }
 
-    // 3. ACCESS GRANTED: If the token matches, fetch and serve the real static file or asset requested
+    // 4. PATH ROUTING PASSTHROUGH: Access granted!
     return env.ASSETS.fetch(request);
   }
 };
