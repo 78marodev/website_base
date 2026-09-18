@@ -2,36 +2,41 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-app.use(cors()); // Allows your GitHub Pages domain to talk to this API
+// 1. ALLOW CLOUDFLARE DOMAIN TO COMMUNICATE CLEARLY
+app.use(cors({
+    origin: "*", 
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.options('*', cors()); 
 app.use(express.json());
 
-// 1. CHOOSE YOUR INFINITE PASSWORDS HERE: Define your valid access API keys
+// 2. VALID ACCESS CODES
 const VALID_API_KEYS = new Set([
     "@bAhroozaa2007",
     "bAhroozaa20245671",
     "bAhroozaa"
 ]);
 
-// 2. THE API ENDPOINT
+// 3. AUTHENTICATION ROUTE
 app.post('/api/verify', (req, res) => {
     const { authKey } = req.body;
 
     if (!authKey) {
-        return res.status(400).json({ valid: false, error: "Missing authentication string." });
+        return res.status(400).json({ valid: false, error: "Missing authentication token string." });
     }
 
-    // Secure checking mechanism against the set array
     if (VALID_API_KEYS.has(authKey)) {
         return res.status(200).json({ 
             valid: true, 
-            sessionToken: "hello martin " // Fixed: Removed the breaking trailing colon
+            sessionToken: "hello martin " 
         });
     }
 
-    // Stealth protection logic response
     return res.status(401).json({ valid: false, error: "Invalid credentials." });
 });
 
-// Start the server endpoint framework
+// Start listening for requests
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Secure API active on port ${PORT}`));
