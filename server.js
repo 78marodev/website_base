@@ -24,7 +24,7 @@ app.post('/api/verify', (req, res) => {
     if (VALID_API_KEYS.has(authKey)) {
         return res.status(200).json({ 
             valid: true, 
-            sessionToken:"hello martin ": // Returned to unlock frontend
+            sessionToken: "hello martin " // Fixed: Removed the breaking trailing colon
         });
     }
 
