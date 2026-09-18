@@ -22,16 +22,17 @@
         <div id="errorMsg" class="error">Invalid token layout response.</div>
     </div>
 
-    <script>
-        function saveToken() {
-            const token = document.getElementById('tokenInput').value.trim();
-            if (token) {
-                // Save token to your browser's local cache memory
-                localStorage.setItem('gatekeeper_token', token);
-                // Redirect straight to your root homepage index file
-                window.location.href = '/';
-            }
+<script>
+    function saveToken() {
+        const token = document.getElementById('tokenInput').value.trim();
+        if (token) {
+            // Save the token as an encrypted-ready browser session cookie
+            document.cookie = `gatekeeper_token=${token}; path=/; secure; samesite=strict`;
+            // Redirect straight to your root homepage index file
+            window.location.href = '/';
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
