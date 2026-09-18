@@ -3,15 +3,15 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // 1. PUBLIC EXCEPTION: Allow the login form to load publicly
+    // 1. PUBLIC LINK LOGINS: Allow access to login forms
     if (path === "/login" || path === "/login.html") {
       return env.ASSETS.fetch(request);
     }
 
-    // 2. TOKEN DETECTION: Look for standard headers OR browser cookies
+    // 2. CHECK TOKEN REGISTRATION SIGNATURES
     let userToken = request.headers.get("Authorization");
     
-    // If no header is present, check if a cookie was sent from a previous login session
+    // Look for browser session cookie strings
     if (!userToken) {
       const cookieHeader = request.headers.get("Cookie") || "";
       const matches = cookieHeader.match(/gatekeeper_token=([^;]+)/);
@@ -22,7 +22,7 @@ export default {
 
     const EXPECTED_TOKEN = `Bearer ${env.AUTH_TOKEN}`;
 
-    // 3. GLOBAL STEALTH TRIGGER: If token fails or is missing, return a dead 404
+    // 3. STEALTH DENIAL: If a user is not authorized, block them on ALL subdomains and paths
     if (!userToken || userToken !== EXPECTED_TOKEN) {
       return new Response("Not Found", { 
         status: 404, 
@@ -30,7 +30,19 @@ export default {
       });
     }
 
-    // 4. PASSTHROUGH GRANTED: Serve the file or image requested
+    // =========================================================================
+    // 4. AUTHORIZED USERS: Directory Masking Engine (Hides paths from URL)
+    // =========================================================================
+    
+    // Even if they are authorized, if they try to type a path manually, mask it back to root
+    if (path !== "/") {
+      // Modify the request object in background memory to read your files internally
+      // without updating the visitor's browser address tab bar.
+      const rewrittenRequest = new Request(new URL("/", url.origin), request);
+      return env.ASSETS.fetch(rewrittenRequest);
+    }
+
+    // Default: Serve the clean layout normally
     return env.ASSETS.fetch(request);
   }
 };
