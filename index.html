@@ -19,7 +19,7 @@
             // Check if your browser's cookie jar contains your session key string
             if (document.cookie.split(';').some((item) => item.trim().startsWith('auth_token='))) {
                 // If the badge exists locally, skip loading the login box and bounce immediately
-                window.location.href = "https://qzz.io";
+                window.location.href = "https://theblackmeadow.qzz.io/portifolio";
             }
         })();
     </script>
@@ -41,7 +41,7 @@
             errorElement.style.display = 'none';
 
             try {
-                const response = await fetch('ttps://api.theblackmeadow.qzz.io/', {
+                const response = await fetch('ttps://api.theblackmeadow.qzz.io/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passwordInput }),
@@ -52,7 +52,7 @@
 
                 if (response.status === 200 && data.success) {
                     // Redirects smoothly to your primary website landing index
-                    window.location.href = "https://api.theblackmeadow.qzz.io/index4";
+                    window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 } else {
                     errorElement.style.display = 'block';
                 }
