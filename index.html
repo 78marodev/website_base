@@ -18,14 +18,14 @@
         (async function checkExistingSession() {
             try {
                 // Securely ping your backend verify route to check for the HTTP-Only cookie card
-                const check = await fetch('https://qzz.io', { 
+                const check = await fetch('https://theblackmeadow.qzz.io/api/login', { 
                     credentials: 'include' // CRITICAL: Sends your secure cookie along with the check
                 });
                 const data = await check.json();
 
                 // If your backend finds the cookie and approves it, bounce to your website instantly
                 if (check.status === 200 && data.authorized) {
-                    window.location.href = "https://qzz.io";
+                    window.location.href = "http://theblackmeadow.qzz.io/portifolio";
                 }
             } catch (err) {
                 // Quietly fail and let the login form show if the user isn't logged in yet
@@ -51,7 +51,7 @@
             errorElement.style.display = 'none';
 
             try {
-                const response = await fetch('https://qzz.io', {
+                const response = await fetch('https://theblackmeadow.qzz.io/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passwordInput }),
@@ -61,7 +61,7 @@
                 const data = await response.json();
 
                 if (response.status === 200 && data.success) {
-                    window.location.href = "https://qzz.io";
+                    window.location.href = "http://theblackmeadow.qzz.io/portifolio";
                 } else {
                     errorElement.style.display = 'block';
                 }
