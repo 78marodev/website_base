@@ -30,27 +30,32 @@
             errorElement.style.display = 'none';
 
             try {
-                // FIXED: Explicitly added /api/login to target the correct backend endpoint path
                 const response = await fetch('https://api.theblackmeadow.qzz.io', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passwordInput }),
-                    credentials: 'include' // CRITICAL: Allows browser to save cross-domain cookies
+                    credentials: 'include' 
                 });
+
+                // If the server answered but returned a bad status code (like 403 Forbidden or 401)
+                if (!response.ok) {
+                    alert("Server responded with code: " + response.status + " " + response.statusText);
+                    errorElement.style.display = 'block';
+                    return;
+                }
 
                 const data = await response.json();
 
-                if (response.status === 200 && data.success) {
-                    // Redirects smoothly to your primary website folder path destination
-                    window.location.href = "https://theblackmeadow.qzz.io/portifolio";
+                if (data.success) {
+                    window.location.href = "http://theblackmeadow.qzz.io/index1";
                 } else {
                     errorElement.style.display = 'block';
                 }
             } catch (err) {
-                alert("Cannot connect to backend server. Make sure your tunnel is running.");
+                // FIXED: Prints the exact underlying JavaScript network/security error block
+                alert("Network/CORS Error Details:\n" + err.name + ": " + err.message);
             }
         }
     </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"a41bd68e8ec74aa48df6cedfbb0af99b","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
