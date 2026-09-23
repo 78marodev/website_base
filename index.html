@@ -25,7 +25,7 @@
 
                 // If your backend finds the cookie and approves it, bounce to your website instantly
                 if (check.status === 200 && data.authorized) {
-                    window.location.href = "http://theblackmeadow.qzz.io/portifolio";
+                    window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 }
             } catch (err) {
                 // Quietly fail and let the login form show if the user isn't logged in yet
@@ -61,7 +61,7 @@
                 const data = await response.json();
 
                 if (response.status === 200 && data.success) {
-                    window.location.href = "http://theblackmeadow.qzz.io/portifolio";
+                    window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 } else {
                     errorElement.style.display = 'block';
                 }
