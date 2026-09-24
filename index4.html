@@ -50,15 +50,71 @@
             <p>A clean web application interface layout equipped with sidebar navigation, metric monitoring cards, and user data tables. Leverages advanced CSS Grid sizing techniques for structured visual hierarchy.</p>
             <a href="#" class="project-link">View Project →</a>
         </div>
+            
 
         </div>
+            <script>
+        // ==========================================
+        // 🛠️ CONFIGURATION: CHANGE THESE TO YOURS!
+        // ==========================================
+        const GITHUB_USERNAME = '78marodev'; 
+        const REPO_NAME = 'website_base';
+        // ==========================================
 
+        const apiUrl = `https://github.com{GITHUB_USERNAME}/${REPO_NAME}/contents/`;
+        const listElement = document.getElementById('file-list');
+
+        async function fetchFiles() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Failed to fetch repository files.');
+                
+                const files = await response.json();
+                
+                // Clear the loading message
+                listElement.innerHTML = '';
+
+                // Files to hide from the public list
+                const excludedFiles = ['index.html', 'README.md', '.git', '.github'];
+
+                files.forEach(file => {
+                    // Only show files that are not excluded
+                    if (!excludedFiles.includes(file.name)) {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        
+                        // Link directly to the file relative to your domain root
+                        a.href = file.name; 
+                        a.textContent = file.name;
+                        
+                        // Optional: Open non-HTML assets like images/PDFs in a new tab
+                        if (!file.name.endsWith('.html')) {
+                            a.target = '_blank';
+                        }
+
+                        li.appendChild(a);
+                        listElement.appendChild(li);
+                    }
+                });
+
+                if (listElement.children.length === 0) {
+                    listElement.innerHTML = '<li>No public files found in this folder.</li>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                listElement.innerHTML = '<li style="color: red;">Error loading files. Check configuration.</li>';
+            }
+        }
+
+        fetchFiles();
+    </script>
 
 
     <!-- Footer -->
     <footer>
         <p>&copy; 2026 martin. All rights reserved.</p>
     </footer>
-
+    
 </body>
 </html>
