@@ -17,18 +17,15 @@
     <script>
         (async function checkExistingSession() {
             try {
-                // Securely ping your backend verify route to check for the HTTP-Only cookie card
                 const check = await fetch('https://theblackmeadow.qzz.io/api/login', { 
-                    credentials: 'include' // CRITICAL: Sends your secure cookie along with the check
+                    credentials: 'include' 
                 });
                 const data = await check.json();
 
-                // If your backend finds the cookie and approves it, bounce to your website instantly
                 if (check.status === 200 && data.authorized) {
                     window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 }
             } catch (err) {
-                // Quietly fail and let the login form show if the user isn't logged in yet
                 console.log("No active cookie session detected.");
             }
         })();
@@ -39,15 +36,16 @@
     <div class="login-card">
         <h2>Secure Gateway</h2>
         <p style="color: #888; font-size: 14px;">Enter passcode to unlock the network</p>
-        <input type="password" id="passcode" placeholder="Enter Passcode">
+        <!-- Added onkeydown listener to catch Enter key -->
+        <input type="password" id="passcode" placeholder="Enter Passcode" onkeydown="if(event.key === 'Enter') submitLogin()">
         <button onclick="submitLogin()">Unlock</button>
         <p id="error-msg" class="error">Invalid Passcode</p>
     </div>
 
     <script>
         async function submitLogin() {
-            const passwordInput = document.getElementById('passcode').value;
             const passwordField = document.getElementById('passcode');
+            const passwordInput = passwordField.value;
             const errorElement = document.getElementById('error-msg');
             errorElement.style.display = 'none';
 
@@ -56,7 +54,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passwordInput }),
-                    credentials: 'include' // Saves the cookie across your network
+                    credentials: 'include' 
                 });
 
                 const data = await response.json();
@@ -65,7 +63,7 @@
                     window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 } else {
                     errorElement.style.display = 'block';
-                    passwordField.value = ''; // Clear password field on failure
+                    passwordField.value = ''; 
                 }
             } catch (err) {
                 alert("Cannot connect to backend server. Make sure your tunnel is running.");
