@@ -47,6 +47,7 @@
     <script>
         async function submitLogin() {
             const passwordInput = document.getElementById('passcode').value;
+            const passwordField = document.getElementById('passcode');
             const errorElement = document.getElementById('error-msg');
             errorElement.style.display = 'none';
 
@@ -64,6 +65,7 @@
                     window.location.href = "https://theblackmeadow.qzz.io/portifolio";
                 } else {
                     errorElement.style.display = 'block';
+                    passwordField.value = ''; // Clear password field on failure
                 }
             } catch (err) {
                 alert("Cannot connect to backend server. Make sure your tunnel is running.");
