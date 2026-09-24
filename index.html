@@ -15,9 +15,12 @@
 
     <!-- SECURE BACKEND COOKIE CHECK & AUTO-REDIRECT -->
     <script>
+        const BACKEND_URL = 'https://api.theblackmeadow.qzz.io/api/login'; // Change to 'https://theblackmeadow.qzz.io' in production
+
         (async function checkExistingSession() {
             try {
-                const check = await fetch('https://theblackmeadow.qzz.io/api/login', { 
+                // FIXED: Changed endpoint from /api/login to /api/verify
+                const check = await fetch(`${BACKEND_URL}/api/verify`, { 
                     credentials: 'include' 
                 });
                 const data = await check.json();
@@ -36,21 +39,21 @@
     <div class="login-card">
         <h2>Secure Gateway</h2>
         <p style="color: #888; font-size: 14px;">Enter passcode to unlock the network</p>
-        <!-- Added onkeydown listener to catch Enter key -->
-        <input type="password" id="passcode" placeholder="Enter Passcode" onkeydown="if(event.key === 'Enter') submitLogin()">
+        <input type="password" id="passcode" placeholder="Enter Passcode">
         <button onclick="submitLogin()">Unlock</button>
         <p id="error-msg" class="error">Invalid Passcode</p>
     </div>
 
     <script>
         async function submitLogin() {
+            const passwordInput = document.getElementById('passcode').value;
             const passwordField = document.getElementById('passcode');
-            const passwordInput = passwordField.value;
             const errorElement = document.getElementById('error-msg');
             errorElement.style.display = 'none';
 
             try {
-                const response = await fetch('https://theblackmeadow.qzz.io/api/login', {
+                // FIXED: Directing to standard endpoint variable
+                const response = await fetch(`${BACKEND_URL}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passwordInput }),
@@ -66,7 +69,7 @@
                     passwordField.value = ''; 
                 }
             } catch (err) {
-                alert("Cannot connect to backend server. Make sure your tunnel is running.");
+                alert("Cannot connect to backend server. Make sure your tunnel or local server is running.");
             }
         }
     </script>
