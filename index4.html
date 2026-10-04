@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Personal Portfolio</title>
+    <!-- Ensure style.css is placed in the exact same folder as this file -->
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="GRAND OPENING (2).png">
+    <!-- Renamed image reference to avoid spaces (rename your physical image file to grand-opening.png) -->
+    <link rel="icon" href="grand-opening.png">
     <meta name="google-site-verification" content="fxdCUjmdt63OsrZYtv2JOaCMSgvHhygopFsM5Sa18Q0" />
 </head>
 <body>
@@ -17,7 +19,7 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#files">Repository Assets</a></li>
             </ul>
         </nav>
     </header>
@@ -27,7 +29,7 @@
         <div class="hero-content">
             <h1>Hi, I'm <span class="highlight">martin johnney</span></h1>
             <p>A passionate Web Developer & Designer creating modern digital experiences.</p>
-            <a href="#contact" class="btn">Get In Touch</a>
+            <a href="#files" class="btn">View Live Assets</a>
         </div>
     </section>
 
@@ -35,92 +37,95 @@
     <section id="projects" class="projects-section">
         <h2>My Projects</h2>
         <div class="projects-grid">
-           <div class="project-card">
-            <h3>E-Commerce Landing Page</h3>
-            <p>A sleek, responsive product showcase page featuring custom navigation menus, interactive pricing cards, and optimized call-to-action sections. Built entirely with clean semantic HTML and native CSS Flexbox.</p>
-            <a href="#" class="project-link">View Project →</a>
-        </div>
-        <div class="project-card">
-            <h3>Developer Portfolio Website</h3>
-            <p>A professional digital resume designed to showcase technical skills and personal engineering projects. Features a modern grid layout, mobile-first design media queries, and smooth scroll behaviors.</p>
-            <a href="#" class="project-link">View Project →</a>
-        </div>
-               <div class="project-card">
-            <h3>Analytics Dashboard Interface</h3>
-            <p>A clean web application interface layout equipped with sidebar navigation, metric monitoring cards, and user data tables. Leverages advanced CSS Grid sizing techniques for structured visual hierarchy.</p>
-            <a href="#" class="project-link">View Project →</a>
-        </div>
-    </div> <!-- Correctly closes the .projects-grid container -->
-</section> <!-- Correctly closes the #projects section container -->
+            <div class="project-card">
+                <h3>E-Commerce Landing Page</h3>
+                <p>A sleek, responsive product showcase page featuring custom navigation menus, interactive pricing cards, and optimized call-to-action sections. Built entirely with clean semantic HTML and native CSS Flexbox.</p>
+                <a href="#" class="project-link">View Project →</a>
+            </div>
+            <div class="project-card">
+                <h3>Developer Portfolio Website</h3>
+                <p>A professional digital resume designed to showcase technical skills and personal engineering projects. Features a modern grid layout, mobile-first design media queries, and smooth scroll behaviors.</p>
+                <a href="#" class="project-link">View Project →</a>
+            </div>
+            <div class="project-card">
+                <h3>Analytics Dashboard Interface</h3>
+                <p>A clean web application interface layout equipped with sidebar navigation, metric monitoring cards, and user data tables. Leverages advanced CSS Grid sizing techniques for structured visual hierarchy.</p>
+                <a href="#" class="project-link">View Project →</a>
+            </div>
+        </div> <!-- Closes .projects-grid -->
+    </section> <!-- Closes #projects -->
 
-<!-- File List Display Section (Ensure this element exists so your script works!) -->
-<section id="files" class="files-section">
-    <h2>Repository Files</h2>
-    <ul id="file-list"><li>Loading repository assets...</li></ul>
-</section>
+    <!-- Dynamic File List Section -->
+    <section id="files" class="files-section">
+        <h2>Repository Files</h2>
+        <ul id="file-list">
+            <li>Loading repository files...</li>
+        </ul>
+    </section>
 
-<script>
-    // ==========================================
-    // 🛠️ CONFIGURATION: CHANGE THESE TO YOURS!
-    // ==========================================
-    const GITHUB_USERNAME = '78marodev'; 
-    const REPO_NAME = 'website_base';
-    // ==========================================
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 martin. All rights reserved.</p>
+    </footer>
 
-    // FIXED: Corrected endpoint pointing to api.github.com with proper string interpolation
-    const apiUrl = `https://github.com{GITHUB_USERNAME}/${REPO_NAME}/contents/`;
-    const listElement = document.getElementById('file-list');
+    <!-- JavaScript For Fetching GitHub Files -->
+    <script>
+        // ==========================================
+        // 🛠️ CONFIGURATION: CHANGE THESE TO YOURS!
+        // ==========================================
+        const GITHUB_USERNAME = '78marodev'; 
+        const REPO_NAME = 'website_base';
+        // ==========================================
 
-    async function fetchFiles() {
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('Failed to fetch repository files.');
-            
-            const files = await response.json();
-            
-            // Clear the loading message
-            listElement.innerHTML = '';
+        // FIXED: Corrected GitHub REST API endpoint configuration 
+        const apiUrl = `https://github.com{GITHUB_USERNAME}/${REPO_NAME}/contents/`;
+        const listElement = document.getElementById('file-list');
 
-            // Files to hide from the public list
-            const excludedFiles = ['index.html', 'README.md', '.git', '.github'];
+        async function fetchFiles() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Failed to fetch repository files.');
+                
+                const files = await response.json();
+                
+                // Clear the loading message template
+                listElement.innerHTML = '';
 
-            files.forEach(file => {
-                // Only show files that are not excluded
-                if (!excludedFiles.includes(file.name)) {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    
-                    // Link directly to the file relative to your domain root
-                    a.href = file.name; 
-                    a.textContent = file.name;
-                    
-                    // Optional: Open non-HTML assets like images/PDFs in a new tab
-                    if (!file.name.endsWith('.html')) {
-                        a.target = '_blank';
+                // Files to hide from the public list
+                const excludedFiles = ['index.html', 'README.md', '.git', '.github'];
+
+                files.forEach(file => {
+                    // Only show files that are not excluded
+                    if (!excludedFiles.includes(file.name)) {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        
+                        // Link directly to the file relative to your domain root
+                        a.href = file.name; 
+                        a.textContent = file.name;
+                        
+                        // Open non-HTML assets like images/PDFs in a new browser tab
+                        if (!file.name.endsWith('.html')) {
+                            a.target = '_blank';
+                        }
+
+                        li.appendChild(a);
+                        listElement.appendChild(li);
                     }
+                });
 
-                    li.appendChild(a);
-                    listElement.appendChild(li);
+                if (listElement.children.length === 0) {
+                    listElement.innerHTML = '<li>No public files found in this folder.</li>';
                 }
-            });
 
-            if (listElement.children.length === 0) {
-                listElement.innerHTML = '<li>No public files found in this folder.</li>';
+            } catch (error) {
+                console.error(error);
+                listElement.innerHTML = '<li style="color: red;">Error loading files. Make sure you run this on a local web server (like Live Server).</li>';
             }
-
-        } catch (error) {
-            console.error(error);
-            listElement.innerHTML = '<li style="color: red;">Error loading files. Check configuration.</li>';
         }
-    }
 
-    fetchFiles();
-</script>
-
-<!-- Footer -->
-<footer>
-    <p>&copy; 2026 martin. All rights reserved.</p>
-</footer>
-
+        fetchFiles();
+    </script>
+    
 </body>
 </html>
