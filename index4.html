@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Personal Portfolio</title>
-    <!-- Ensure style.css is placed in the exact same folder as this file -->
     <link rel="stylesheet" href="style.css">
-    <!-- Renamed image reference to avoid spaces (rename your physical image file to grand-opening.png) -->
     <link rel="icon" href="grand-opening.png">
     <meta name="google-site-verification" content="fxdCUjmdt63OsrZYtv2JOaCMSgvHhygopFsM5Sa18Q0" />
 </head>
@@ -52,8 +50,8 @@
                 <p>A clean web application interface layout equipped with sidebar navigation, metric monitoring cards, and user data tables. Leverages advanced CSS Grid sizing techniques for structured visual hierarchy.</p>
                 <a href="#" class="project-link">View Project →</a>
             </div>
-        </div> <!-- Closes .projects-grid -->
-    </section> <!-- Closes #projects -->
+        </div>
+    </section>
 
     <!-- Dynamic File List Section -->
     <section id="files" class="files-section">
@@ -71,13 +69,13 @@
     <!-- JavaScript For Fetching GitHub Files -->
     <script>
         // ==========================================
-        // 🛠️ CONFIGURATION: CHANGE THESE TO YOURS!
+        // 🛠️ CONFIGURATION
         // ==========================================
         const GITHUB_USERNAME = '78marodev'; 
         const REPO_NAME = 'website_base';
         // ==========================================
 
-        // FIXED: Corrected GitHub REST API endpoint configuration 
+        // FIXED API URL ENDPOINT
         const apiUrl = `https://github.com{GITHUB_USERNAME}/${REPO_NAME}/contents/`;
         const listElement = document.getElementById('file-list');
 
@@ -87,24 +85,19 @@
                 if (!response.ok) throw new Error('Failed to fetch repository files.');
                 
                 const files = await response.json();
-                
-                // Clear the loading message template
                 listElement.innerHTML = '';
 
-                // Files to hide from the public list
-                const excludedFiles = ['index.html', 'README.md', '.git', '.github'];
+                const excludedFiles = ['index.html', 'README.md', '.git', '.github', 'style.css', 'index4.html'];
 
                 files.forEach(file => {
-                    // Only show files that are not excluded
                     if (!excludedFiles.includes(file.name)) {
                         const li = document.createElement('li');
                         const a = document.createElement('a');
                         
-                        // Link directly to the file relative to your domain root
+                        // Generates the correct link relative to your deployment domain root
                         a.href = file.name; 
                         a.textContent = file.name;
                         
-                        // Open non-HTML assets like images/PDFs in a new browser tab
                         if (!file.name.endsWith('.html')) {
                             a.target = '_blank';
                         }
@@ -120,7 +113,7 @@
 
             } catch (error) {
                 console.error(error);
-                listElement.innerHTML = '<li style="color: red;">Error loading files. Make sure you run this on a local web server (like Live Server).</li>';
+                listElement.innerHTML = '<li style="color: red;">Error loading repository assets. Make sure your changes are saved and uploaded.</li>';
             }
         }
 
