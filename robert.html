@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="dark:bg-gray-900"> <!-- Fixed duplicate dark: prefix -->
+    <!-- Added overflow-hidden to keep the image hover effect contained -->
+    <main class="dark:bg-black bg-purple-100 shadow-md border-t-2 border-purple-900 m-4 overflow-hidden sm:flex sm:flex-row sm:items-center">
+      <h1 class="text-3xl font-bold text-center sm:text-left sm:ml-[1.25rem] sm:mr-[1.25rem] dark:text-white">
+        Robert Downey Jr.
+      </h1>
+      <!-- Added object-cover to make the scaling animation clean -->
+      <img
+        src="https://cdn.wallpapersafari.com/21/76/v26KTO.jpg"
+        alt="RDJ"
+        class="rounded-2xl transition-all duration-200 sm:w-[15rem] sm:h-[18rem] object-cover hover:scale-110" >
+        
+      <section class="sm:ml-[1.25rem] sm:mr-[1.25rem]">
+        <p class="font-bold my-3 font-[arial] md:text-[1.125rem] lg:text-[1.5rem] dark:text-white">
+          Robert Downey Jr. is an American actor and producer. His career has
+          been characterized by critical and popular success in his youth,
+          followed by a period of substance abuse and legal troubles, before a
+          resurgence of commercial success later in his career.
+        </p>
+        <button
+          class="bg-black text-yellow-300 py-2 px-4 rounded-md font-bold transition-all duration-300 md:text-[1.125rem] lg:text-[1.5rem] dark:bg-yellow-300 dark:text-black sm:hover:bg-yellow-300 sm:hover:text-black">
+          Visit Instagram
+        </button>
+      </section>
+    </main>
+  </body>
+</html>
